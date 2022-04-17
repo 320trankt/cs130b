@@ -1,5 +1,6 @@
 #include <iostream>
 #include "hull.h"
+#include "point.h"
 #include "utilityFuncs.h"
 
 using namespace std;
@@ -9,21 +10,24 @@ int main(int argc, char* argv[]) {
     string line;
     getline(inputPoints, line, "\n");
     int numPoints = stoi(line); // get first line of input file as number of points
-    vector<pair<double, double>> points;
+    vector<point> points;
+    int indexCounter = 0;
     while(getline(inputPoints, line, "\n")){ // get entire line into "line" variable
-        pair<double, double> point;
+        point p;
+        p.index = indexCounter;
         istringstream currentLine(line);
         string value;
         getline(currentLine, value, ",");
-        point.first = stod(value);
+        p.x = stod(value);
         getline(currentLine, value, "\n");
-        point.second = stod(value);
+        p.y = stod(value);
         points.push_back(point);
+        indexCounter++;
     }
     //at this point points should be a vector containing all points from input file as pair<double, double>
     hull inputHull;
     for (int i; i < numPoints; i++){
-        inputHull.addPoint(points[i], i);
+        inputHull.addPoint(points[i]);
     }//add all points to vector of points in hull object
     vector<tuple<int, double, double>> convexHullPoints = inputHull.quickHull();
     int numConvexHullPoints = convexHullPoints.size(); //this may take too long, could build into quickHull to return size if this takes too long

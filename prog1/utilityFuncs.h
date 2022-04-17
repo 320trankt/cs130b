@@ -1,11 +1,22 @@
 #include <string>
+#include <math>
+#include <climits>
+#include "hull.h"
+#include "point.h"
 
+using namespace std;
 
 //returns the line ax+by+c=0 between the points a and b in the form tuple<a, b, c>
-tuple<double, double, double> getLine(tuple<int, double, double> a, tuple<int, double, double> b); 
+tuple<double, double, double> getLine(point a, point b); 
 
 //returns the euclidean distance between the line denoted by tuple<a, b, c> such that ax+by+c=0 and point c
-double findDistanceToLine(tuple<double,double,double> line, tuple<int, double, double> c);
+double findDistanceToLine(tuple<double,double,double> line, point p);
 
 //returns the point within the input vector of points which is the farthest from the line between points a and b
-tuple<int, double, double> findFarthestPoint(tuple<int, double, double> a, tuple<int, double, double> b, vector<tuple<int, double, double>> points);
+point findFarthestPoint(point a, point b, vector<point> points);
+
+//returns direction of point p in relation to line between a and b, -1 for left, 1 for right, 0 for colinear
+int directionOfPoint(point a, point b, point p);
+
+//returns all points from inputPoints that are on the side of the line between a and b specified by int side (1 for right, -1 for left, 0 for colinear)
+vector<point> getAllPointsOnSide(point a, point b, vector<point> inputPoints, int side);
