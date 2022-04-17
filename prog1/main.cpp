@@ -29,11 +29,12 @@ int main(int argc, char* argv[]) {
     for (int i; i < numPoints; i++){
         inputHull.addPoint(points[i]);
     }//add all points to vector of points in hull object
-    vector<tuple<int, double, double>> convexHullPoints = inputHull.quickHull();
-    int numConvexHullPoints = convexHullPoints.size(); //this may take too long, could build into quickHull to return size if this takes too long
-    cout<<numConvexHullPoints<<endl; // print out number of points in convex hull
+    vector<point> convexHullPoints = inputHull.quickHull();
+    //int numConvexHullPoints = convexHullPoints.size(); //this may take too long, could build into quickHull to return size if this takes too long
+    /* cout<<numConvexHullPoints<<endl; // print out number of points in convex hull
     for (tuple<int,double,double> i : convexHullPoints){ // range-based for loop prints out each point in convex hull
         cout<< get<0>(i) << ", " << get<1>(i) << ", " << get<2>(i) << endl;
-    }
+    } */
+    inputHull.printHull();
     return 0; // done
 }
