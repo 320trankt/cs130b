@@ -6,8 +6,8 @@ void hull::addPoint(point p){
 }
 
 vector<point> hull::quickHull(){
-    point maxX(-1, static_cast<double>(INT_MAX), 0.0);
-    point minX(-1, static_cast<double>(INT_MIN), 0.0);
+    point maxX(-1, static_cast<double>(INT_MIN), 0.0);
+    point minX(-1, static_cast<double>(INT_MAX), 0.0);
     for (point i : inputPoints){ // iterates through all points and finds min and max x points
         if (i.x > maxX.x){
             maxX.setEqual(i);
@@ -29,7 +29,6 @@ vector<point> hull::quickHull(){
 }
 
 void hull::recursiveHelper(point a, point b, vector<point> points){
-    
     point p = findFarthestPoint(a, b, points);
     hullPoints.push_back(p);
     numPoints++;
