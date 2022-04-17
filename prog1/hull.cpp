@@ -25,7 +25,24 @@ vector<point> hull::quickHull(){
     return hullPoints;
 }
 
-vector<point> hull::recursiveHelper(point a, point b, vector<point> points){
-    point p = findFarthestPoint(a, b, points);
+void hull::recursiveHelper(point a, point b, vector<point> points){
     
+    point p = findFarthestPoint(a, b, points);
+    hullPoints.push_back(p)
+    vector<point> outsidePoints = getAllPointsOutside(a, b, p, points);
+    if(outsidePoints.size() == 0){
+        return;
+    }else{
+        recursiveHelper(a, p, outsidePoints);
+        recursiveHelper(b, p, outsidePoints);
+        return;
+    }
+}
+
+void hull::printHull(){
+    cout<<numPoints<<endl;
+    for(point i : hullPoints){
+        cout<<i.index<<", "<<i.x<< ", "<< i.y <<endl;
+    }
+    return;
 }

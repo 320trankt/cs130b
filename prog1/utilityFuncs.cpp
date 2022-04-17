@@ -74,3 +74,28 @@ vector<point> utilityFuncs::getAllPointsOnSide(point a, point b, vector<point> i
     }
     return outputPoints;
 }
+
+double utilityFuncs::area(point a, point b, point c){
+    return abs((a.x*(b.y-c.y) + b.x*(c.y-a.y)+ c.x*(a.y-b.y))/2.0);
+}
+
+bool utilityFuncs::isPointInside(point p, point a, point b, point c){
+    //point p is inside a,b,c if the areas of the triangles it forms with a, b, and c sum up to area of triangle a,b,c
+    double areaABC = area(a, b, c);
+    double areaPAB = area(p, a, b);
+    double areaPAC = area(p, a, c);
+    double areaPBC = area(p, b, c);
+
+    return std::fabs(areaABC - (areaPAB + areaPAC + areaPBC)) <= std::numeric_limits<double>::epsilon();
+}
+
+vector<point> utilityFuncs::getAllPointsOutside(point a, point b, point c, vector<point> inputPoints){
+    vector<point> outsidePoints;
+    for (point i : inputPoints){
+        if(!isPointInside(i, a, b, c)){
+            outsidePoints.push_back(i);
+        }
+    }
+    return outsidePoints;
+}
+
