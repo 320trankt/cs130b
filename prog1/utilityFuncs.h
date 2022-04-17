@@ -1,13 +1,14 @@
 #include <string>
-#include <math>
+#include <cmath>
 #include <climits>
-#include "hull.h"
+#include <vector>
+#include <tuple>
 #include "point.h"
 
 using namespace std;
 
 //returns the line ax+by+c=0 between the points a and b in the form tuple<a, b, c>
-tuple<double, double, double> getLine(point a, point b); 
+tuple<double, double, double> getLineBetweenPoints(point p1, point p2); 
 
 //returns the euclidean distance between the line denoted by tuple<a, b, c> such that ax+by+c=0 and point c
 double findDistanceToLine(tuple<double,double,double> line, point p);

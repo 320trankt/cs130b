@@ -1,6 +1,4 @@
-#include "point.cpp"
-
-using namespace std;
+#include "point.h"
 
 point::point(){
     index = -1;
@@ -8,15 +6,14 @@ point::point(){
     y = 0.0;
 }
 
-point::point(int index, double x, double y){
-    this.index = index;
-    this.x = x;
-    this.y = y;
+point::point(int p_index, double p_x, double p_y){
+    index = p_index;
+    x = p_x;
+    y = p_y;
 }
 
 void point::setEqual(point p){
-    this.index = p.index;
-    this.x = p.x;
-    this.y = p.y;
-    return;
+    index = p.index;
+    x = p.x;
+    y = p.y;
 }

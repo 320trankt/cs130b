@@ -1,9 +1,11 @@
 #include "utilityFuncs.h"
+#include <stdexcept>
+#include <limits>
 
 using namespace std;
 
 //returns the line ax+by+c=0 between the points p1 and p2 in the form tuple<a, b, c>
-tuple<double, double, double> utilityFuncs::getLine(point p1, point p2){
+tuple<double, double, double> getLineBetweenPoints(point p1, point p2){
     //a = y1 - y2
     double a = p1.y - p2.y;
     //b = x2-x1
@@ -14,18 +16,18 @@ tuple<double, double, double> utilityFuncs::getLine(point p1, point p2){
     return(make_tuple(a, b, c));
 }
 
-double utilityFuncs::findDistanceToLine(tuple<double,double,double> line, point p){
+double findDistanceToLine(tuple<double,double,double> line, point p){
     double a = get<0>(line);
     double b = get<1>(line);
     double c = get<2>(line);
-    double distance = (abs((a*p.x) + (b*p.y) + c))/(sqrt(a**2 + b**2));
+    double distance = (abs((a*p.x) + (b*p.y) + c))/(sqrt(pow(a, 2) + pow(b, 2)));
     return distance;
 }
 
-point utilityFuncs::findFarthestPoint(point a, point b, vector<point> points){
+point findFarthestPoint(point a, point b, vector<point> points){
     double maxDistance = 0;
     point p;
-    tuple<double, double, double> line = getLine(a, b);
+    tuple<double, double, double> line = getLineBetweenPoints(a, b);
     for (point i : points){
         if(findDistanceToLine(line, i) > maxDistance){
             maxDistance = findDistanceToLine(line, i);
@@ -35,7 +37,7 @@ point utilityFuncs::findFarthestPoint(point a, point b, vector<point> points){
     return p;
 }
 
-int utilityFuncs::directionOfPoint(point a, point b, point p){
+int directionOfPoint(point a, point b, point p){
     //center point a on (0,0)
     b.x = b.x - a.x;
     b.y = b.y - a.y;
@@ -55,7 +57,7 @@ int utilityFuncs::directionOfPoint(point a, point b, point p){
     }
 }
 
-vector<point> utilityFuncs::getAllPointsOnSide(point a, point b, vector<point> inputPoints, int side){
+vector<point> getAllPointsOnSide(point a, point b, vector<point> inputPoints, int side){
     vector<point> outputPoints;
     //left points
     if (side < 0){
@@ -75,11 +77,11 @@ vector<point> utilityFuncs::getAllPointsOnSide(point a, point b, vector<point> i
     return outputPoints;
 }
 
-double utilityFuncs::area(point a, point b, point c){
+double area(point a, point b, point c){
     return abs((a.x*(b.y-c.y) + b.x*(c.y-a.y)+ c.x*(a.y-b.y))/2.0);
 }
 
-bool utilityFuncs::isPointInside(point p, point a, point b, point c){
+bool isPointInside(point p, point a, point b, point c){
     //point p is inside a,b,c if the areas of the triangles it forms with a, b, and c sum up to area of triangle a,b,c
     double areaABC = area(a, b, c);
     double areaPAB = area(p, a, b);
@@ -89,7 +91,7 @@ bool utilityFuncs::isPointInside(point p, point a, point b, point c){
     return std::fabs(areaABC - (areaPAB + areaPAC + areaPBC)) <= std::numeric_limits<double>::epsilon();
 }
 
-vector<point> utilityFuncs::getAllPointsOutside(point a, point b, point c, vector<point> inputPoints){
+vector<point> getAllPointsOutside(point a, point b, point c, vector<point> inputPoints){
     vector<point> outsidePoints;
     for (point i : inputPoints){
         if(!isPointInside(i, a, b, c)){

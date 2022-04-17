@@ -1,16 +1,14 @@
 #include <string>
-#include <climits>
-#include "point.h"
 #include "utilityFuncs.h"
 
 class hull{
     public:
         int numPoints;
-        vector<point> inputPoints;
-        vector<point> hullPoints;
+        std::vector<point> inputPoints;
+        std::vector<point> hullPoints;
         hull() : numPoints(0) {}
         void addPoint(point p);
-        vector<point> quickHull(); // returns vector of points containing points on convex hull in form tuple<index, x-coord, y-coord>
-        void recursiveHelper(point a, point b, vector<point> points);
+        std::vector<point> quickHull(); // returns vector of points containing points on convex hull in form tuple<index, x-coord, y-coord>
+        void recursiveHelper(point a, point b, std::vector<point> points);
         void printHull();
 };
