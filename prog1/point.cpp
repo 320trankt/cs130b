@@ -17,3 +17,7 @@ void point::setEqual(point p){
     x = p.x;
     y = p.y;
 }
+
+bool point::operator< (const point &other) const{
+    return y < other.y;
+}
