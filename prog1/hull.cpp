@@ -1,12 +1,15 @@
 #include "hull.h"
 #include <iostream>
 #include <algorithm>
+#include <time.h>
 
 void hull::addPoint(point p){
     inputPoints.push_back(p);
 }
 
 vector<point> hull::quickHull(){
+    //clock_t t;
+    //t = clock();
     point maxX(-1, static_cast<double>(INT_MIN), 0.0);
     point minX(-1, static_cast<double>(INT_MAX), 0.0);
     for (point i : inputPoints){ // iterates through all points and finds min and max x points
@@ -26,6 +29,8 @@ vector<point> hull::quickHull(){
     vector<point> rightSidePoints = getAllPointsOnSide(minX, maxX, inputPoints, -1);
     recursiveHelper(minX, maxX, leftSidePoints);
     recursiveHelper(minX, maxX, rightSidePoints);
+    //t = clock() - t;
+    //cout<<"Runtime for "<<inputPoints.size()<<" points: "<<t<<" clock."<<endl;
     return hullPoints;
 }
 
