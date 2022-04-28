@@ -11,7 +11,7 @@ tuple<double, double, double> getLineBetweenPoints(point p1, point p2){
     //b = x2-x1
     double b = p2.x - p1.x;
     //c = x1y2 - x2y1
-    double c = (p1.x*p2.y) - (p2.x*p1.y); 
+    double c = (p1.x*p2.y) - (p2.x*p1.y);
 
     return(make_tuple(a, b, c));
 }
@@ -25,7 +25,7 @@ double findDistanceToLine(tuple<double,double,double> line, point p){
 }
 
 point findFarthestPoint(point a, point b, vector<point> points){
-    double maxDistance = 0;
+    double maxDistance = 0.0;
     point p;
     tuple<double, double, double> line = getLineBetweenPoints(a, b);
     for (point i : points){
@@ -39,13 +39,14 @@ point findFarthestPoint(point a, point b, vector<point> points){
 
 int directionOfPoint(point a, point b, point p){
     //center point a on (0,0)
-    b.x = b.x - a.x;
+    /* b.x = b.x - a.x;
     b.y = b.y - a.y;
     p.x = p.x - a.x;
     p.y = p.y - a.y;
 
     double cross_product = b.x*p.y - b.y*p.x;
-
+ */
+    double cross_product = (p.y - a.y) * (b.x - a.x) - (b.y - a.y) * (p.x - a.x);
     if(cross_product > 0){
         return 1;
     }
