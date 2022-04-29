@@ -7,5 +7,6 @@ class point{
         int index;
         double x;
         double y;
+        vector<edge> adj;
         void setEqual(point p);
 };
