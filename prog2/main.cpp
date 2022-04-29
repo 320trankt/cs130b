@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "edge.h"
+#include "graph.h"
 
 using namespace std;
 
@@ -54,6 +55,6 @@ int main(int argc, char* argv[]) {
             return 0;
         }
     }
-    inputGraph.dijkstra(inputGraph.points[0]);
+    inputGraph.dijkstra(inputGraph.points[0], numPoints);
     return 0; // done
 }
