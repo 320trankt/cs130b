@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
             p.x = stod(value);
             getline(currentLine, value);
             p.y = stod(value);
+            p.seen = false;
             points.push_back(p);
             inputGraph.points[indexCounter] = p;
             indexCounter++;
@@ -53,6 +54,6 @@ int main(int argc, char* argv[]) {
             return 0;
         }
     }
-    inputGraph.dijkstra();
+    inputGraph.dijkstra(inputGraph.points[0]);
     return 0; // done
 }
