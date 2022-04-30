@@ -1,4 +1,6 @@
 #include <map>
+#include <queue>
+#include <limits>
 #include "point.h"
 #include "edge.h"
 #include "utilityFuncs.h"

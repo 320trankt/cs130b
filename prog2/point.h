@@ -8,6 +8,6 @@ class point{
         double x;
         double y;
         vector<edge> adj;
-        bool seen;
+        double distance;
         void setEqual(point p);
 };
