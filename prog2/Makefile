@@ -1,21 +1,21 @@
 CC = g++
 
-BINARIES: hull
+BINARIES: dijkstra
 
-hull: main.o hull.o utilityFuncs.o point.o
-	g++ -o hull main.o hull.o utilityFuncs.o point.o
+dijkstra: main.o graph.o point.o edge.o
+	g++ -o dijkstra main.o graph.o point.o edge.o
 
 main.o: main.cpp
 	g++ -c main.cpp
 
-hull.o: hull.cpp 
-	g++ -c hull.cpp
-
-utilityFuncs.o: utilityFuncs.cpp
-	g++ -c utilityFuncs.cpp
+graph.o: graph.cpp 
+	g++ -c graph.cpp
 
 point.o: point.cpp
 	g++ -c point.cpp
 
+edge.o: edge.cpp
+	g++ -c edge.cpp
+
 clean:
-	/bin/rm -f hull *.o
+	/bin/rm -f dijkstra *.o

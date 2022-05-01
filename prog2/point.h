@@ -1,3 +1,5 @@
+#include <vector>
+#include "edge.h"
 using namespace std;
 
 class point{

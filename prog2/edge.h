@@ -1,6 +1,3 @@
-#include "point.h"
-#include "utilityFuncs.h"
-
 using namespace std;
 
 class edge{

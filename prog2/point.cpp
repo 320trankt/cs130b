@@ -16,4 +16,7 @@ void point::setEqual(point p){
     index = p.index;
     x = p.x;
     y = p.y;
+    distance = p.distance;
+    adj = p.adj;
+    shortestPath = p.shortestPath;
 }
