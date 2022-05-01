@@ -55,6 +55,6 @@ int main(int argc, char* argv[]) {
             return 0;
         }
     }
-    inputGraph.dijkstra(inputGraph.points[0], numPoints);
+    inputGraph.dijkstra(numPoints);
     return 0; // done
 }

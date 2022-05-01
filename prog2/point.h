@@ -9,5 +9,6 @@ class point{
         double y;
         vector<edge> adj;
         double distance;
+        vector<int> shortestPath;
         void setEqual(point p);
 };
