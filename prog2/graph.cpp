@@ -75,12 +75,12 @@ void graph::dijkstra(int src, unsigned int numPoints){
     }
     t = clock() - t;
     cout<<"Runtime for "<<points.size()<<" points: "<<t<<" clock cycles."<<endl;
-    for (int i = 1; i < numPoints; i++){//print all finalized points' shortest paths
+    /* for (int i = 1; i < numPoints; i++){//print all finalized points' shortest paths
         int pathSize = points[i].shortestPath.size();
         cout<<points[i].shortestPath[0];
         for (int j = 1; j < pathSize; j++){
             cout<<", "<<points[i].shortestPath[j];
         }
         cout<<endl;
-    }
+    } */
 }
