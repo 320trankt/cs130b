@@ -7,4 +7,5 @@ class edge{
         int p1;
         int p2;
         double weight;
+        void operator =(const edge& e);
 };

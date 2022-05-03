@@ -14,6 +14,7 @@ void graph::dijkstra(int src, unsigned int numPoints){
     t = clock();
     priority_queue<pair<double, edge>, vector<pair<double, edge>>, compareEdges> pathConsideration;//each edge's double is the distance from the source
     unordered_set<int> finalizedPoints;
+    points[src].distance = 0.0;
     for (edge e : points[src].adj){//for src point, push all edges into consideration
         pathConsideration.push(make_pair(e.weight, e));//for each adjacent point, it's distance is defined as weight of edge between source and destination
         if(src == e.p1){//update destination point's distance from source
@@ -43,10 +44,8 @@ void graph::dijkstra(int src, unsigned int numPoints){
         }
         finalizedPoints.insert(destinationPoint.index);//finalize destinationPoint
         //update destination point's distance from source and shortest path vector here
-        /* points[destinationPoint.index].distance += currentPoint.distance;
-        destinationPoint.distance += currentPoint.distance;
-        points[destinationPoint.index].distance += currentEdge.weight;//destinationPoint's distance from source is currentPoint's distance + edge's weight
-        destinationPoint.distance += currentEdge.weight; */
+        points[destinationPoint.index].distance += (currentPoint.distance + currentEdge.weight);
+        destinationPoint.distance += (currentPoint.distance + currentEdge.weight);
         points[destinationPoint.index].shortestPath = currentPoint.shortestPath;
         destinationPoint.shortestPath = currentPoint.shortestPath;
         points[destinationPoint.index].shortestPath.push_back(destinationPoint.index);//destinationPoint's shortest path is currentpoint's shortest path + destination point
@@ -60,15 +59,15 @@ void graph::dijkstra(int src, unsigned int numPoints){
                     if(finalizedPoints.count(e.p2) > 0){//if the new destination point is already finalized, don't push edge into consideration
                         continue;
                     }else{
-                        pathConsideration.push(make_pair(e.weight + destinationPoint.distance, e));//push edge to consideration. new edge's distance from source is defined as current distance + edge's weight
-                        points[e.p2].distance += (destinationPoint.distance + e.weight);
+                        pathConsideration.push(make_pair((e.weight + destinationPoint.distance), e));//push edge to consideration. new edge's distance from source is defined as current distance + edge's weight
+                        //points[e.p2].distance += (e.weight + destinationPoint.distance);
                     }
                 }else{//new destination point is e.p1
                     if(finalizedPoints.count(e.p1) > 0){
                         continue;
                     }else{
-                        pathConsideration.push(make_pair(e.weight + destinationPoint.distance, e));
-                        points[e.p1].distance += (destinationPoint.distance + e.weight);
+                        pathConsideration.push(make_pair((e.weight + destinationPoint.distance), e));
+                        //points[e.p1].distance += (e.weight + destinationPoint.distance);
                     }
                 }
             }

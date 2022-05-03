@@ -1,4 +1,5 @@
 #include <vector>
+#include <limits>
 #include "edge.h"
 using namespace std;
 
@@ -13,4 +14,5 @@ class point{
         double distance;
         vector<int> shortestPath;
         void setEqual(point p);
+        void operator =(const point& p);
 };
