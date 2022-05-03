@@ -10,11 +10,15 @@ class compareEdges{
 };
 
 void graph::dijkstra(int src, unsigned int numPoints){
-    priority_queue<pair<double, edge>, vector<pair<double, edge>>, compareEdges> pathConsideration;
+    priority_queue<pair<double, edge>, vector<pair<double, edge>>, compareEdges> pathConsideration;//each edge's double is the distance from the source
     unordered_set<int> finalizedPoints;
-    //vector<int> finalizedPoints;
     for (edge e : points[src].adj){
         pathConsideration.push(make_pair(e.weight, e));
+        if(src == e.p1){
+            points[e.p2].distance += e.weight;
+        }else{
+            points[e.p1].distance += e.weight;
+        }
     }
     finalizedPoints.insert(src);
     points[src].shortestPath.push_back(src);
@@ -34,26 +38,36 @@ void graph::dijkstra(int src, unsigned int numPoints){
         if ((finalizedPoints.count(currentPoint.index) > 0) && (finalizedPoints.count(destinationPoint.index) > 0)){
             continue;
         }
-        points[destinationPoint.index].distance += currentPoint.distance;
+        finalizedPoints.insert(destinationPoint.index);
+        //update destination point's distance from source and shortest path vector here
+        points[destinationPoint.index].distance += currentPoint.distance;//
         destinationPoint.distance += currentPoint.distance;
         points[destinationPoint.index].distance += currentEdge.weight;
         destinationPoint.distance += currentEdge.weight;
-        for (edge e : destinationPoint.adj){
-            if (((e.p1 == currentEdge.p1) && (e.p2 == currentEdge.p2)) || ((e.p1 == currentEdge.p2) && (e.p2 == currentEdge.p1))){
-                continue;
-            }else{
-                pathConsideration.push(make_pair(e.weight + destinationPoint.distance, e));
-            }
-        }
         points[destinationPoint.index].shortestPath = currentPoint.shortestPath;
         destinationPoint.shortestPath = currentPoint.shortestPath;
         points[destinationPoint.index].shortestPath.push_back(destinationPoint.index);
         destinationPoint.shortestPath.push_back(destinationPoint.index);
-        finalizedPoints.insert(destinationPoint.index);
-        /* for (auto i = finalizedPoints.begin(); i != finalizedPoints.end(); ++i){
-            cout<< *i<<" ";
+        //here push all destination point's edges into consideration
+        for (edge e : destinationPoint.adj){
+            if (((e.p1 == currentEdge.p1) && (e.p2 == currentEdge.p2)) || ((e.p1 == currentEdge.p2) && (e.p2 == currentEdge.p1))){//makes sure that edge just taken isnt pushed into consideration again
+                continue;
+            }else{
+                if(destinationPoint.index == e.p1){//new destination point is e.p2
+                    if(finalizedPoints.count(e.p2) > 0){//if the new destination point already has a shorter path
+                        continue;//don't push edge with new point to consideration
+                    }else{
+                        pathConsideration.push(make_pair(e.weight + destinationPoint.distance, e));//push edge to consideration. new edge's distance from source is defined as current distance + edge's weight
+                    }
+                }else{//new destination point is e.p1
+                    if(finalizedPoints.count(e.p1) > 0){
+                        continue;
+                    }else{
+                        pathConsideration.push(make_pair(e.weight + destinationPoint.distance, e));
+                    }
+                }
+            }
         }
-        cout<<"size of finalizedPoints: "<<finalizedPoints.size()<<endl; */
     }
     for (int i = 1; i < numPoints; i++){
         int pathSize = points[i].shortestPath.size();
