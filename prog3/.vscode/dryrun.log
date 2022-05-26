@@ -1,0 +1,8 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/mnt/d/coding/cs130b/prog3'
+g++ -c main.cpp
+ 
+g++ -c dnaCheck.cpp
+g++ -o prog3 main.o dnaCheck.o 
+make: Leaving directory '/mnt/d/coding/cs130b/prog3'
+ 
