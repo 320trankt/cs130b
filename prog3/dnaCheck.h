@@ -19,8 +19,6 @@ class dnaCheck{
         double changeValue;
         double deleteValue;
         vector<vector<double>> profitTable;
-        void getSimilarity();
-        double recursiveHelper(int m, int n);
-        double getScore(char b1, char b2);
+        double isMatching(char b1, char b2);
         void fillInProfitTable();
 };

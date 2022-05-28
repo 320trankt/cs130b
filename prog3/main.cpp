@@ -2,66 +2,44 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <getopt.h>
 #include "dnaCheck.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    ifstream inputResults(argv[1]); //filename is input as first argument to main
+    dnaCheck test;//initialize dnaCheck object
+    string pathToSeq1a;//string will be used as path to seq1a input file
+    string pathToSeq1b;//string will be used as path to seq1b input file
+    int opt;//opt used to handle flags in command line input
+    while ((opt = getopt(argc, argv, "m:c:d:1:2:")) != -1){
+        switch (opt){
+            case 'm'://if m is supplied as an argument
+                test.matchValue = stod(optarg);//set match value to m
+            case 'c':
+                test.changeValue = stod(optarg);
+            case 'd':
+                test.deleteValue = stod(optarg);
+            case '1':
+                pathToSeq1a = optarg;
+            case '2':
+                pathToSeq1b = optarg;
+        }
+    }
     string line;
-
-    int testCounter = 1;
-
-    double m;
-    double c;
-    double d;
-    string seq1aFile;
-    string seq1bFile;
-    string seq1a;
-    string seq1b;
     ifstream input1;
     ifstream input2;
-    string pathToSeq1a;
-    string pathToSeq1b;
-    while(getline(inputResults, line)){
-        stringstream currentLine(line);
-        string value;
-        getline(currentLine, value, ' ');//get m=2
-        m = stof(value.substr(value.find('=')+1));//get 2
-        getline(currentLine, value, ' ');//get c=-0.2
-        c = stof(value.substr(value.find('=')+1));
-        getline(currentLine, value, ' ');
-        d = stof(value.substr(value.find('=')+1));
-        getline(currentLine, value, ' ');
-        seq1aFile = value.substr(value.find('=')+1);
-        getline(currentLine, value, ' ');
-        seq1bFile = value.substr(value.find('=')+1);
-
-        //cout<<"yuh1"<<endl;
-
-        pathToSeq1a = "testData/" + seq1aFile + ".txt";
-        pathToSeq1b = "testData/" + seq1bFile + ".txt";
-        input1.open(pathToSeq1a);
-        input2.open(pathToSeq1b);
-        getline(input1, line);
-        seq1a = line;
-        getline(input2, line);
-        seq1b = line;
-        input1.close();
-        input2.close();
-        dnaCheck test(seq1a, seq1b, m, c, d);
-
-        //cout<<"yuh2"<<endl;
-        
-        test.fillInProfitTable();
-        
-        //cout<<"yuh3"<<endl;
-        
-        cout<<"Test "<<testCounter<<": "<<test.profitTable.back().back()<<endl;
-        
-        //cout<<"yuh4"<<endl;
-        
-        testCounter++;
-    }
+    input1.open(pathToSeq1a);
+    input2.open(pathToSeq1b);
+    getline(input1, line);
+    test.seq1 = line;//set seq1 as line from seq1a input file
+    getline(input2, line);
+    test.seq2 = line;//set seq2 as line from seq1b input file
+    input1.close();
+    input2.close();
+    test.fillInProfitTable();//fills in profit table bottom-up approach
+    cout<<test.profitTable.back().back()<<endl;//max profit for full strings is bottom rightmost entry in profit table
+    cout<<test.seq1Updated<<endl;//output updated seq1 with substitutions and insertions
+    cout<<test.seq2Updated<<endl;
     return 0; // done
 }
