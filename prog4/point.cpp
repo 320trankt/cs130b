@@ -19,5 +19,5 @@ void point::setEqual(point p){
 }
 
 bool point::operator< (const point &other) const{
-    return y < other.y;
+    return distanceToLine < other.distanceToLine;
 }
