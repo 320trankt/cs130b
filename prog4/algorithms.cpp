@@ -29,3 +29,48 @@ double getMedianError(vector<point> inputSet){
         return medianErrorVector[setSize/2];//return median deviation
     }
 }
+
+tuple<double, double, double> getModel(vector<point> inputSet){
+    double n = inputSet.size();
+    double sumx4 = 0;
+    double sumx3 = 0;
+    double sumx2 = 0;
+    double sumx = 0;
+    double sumy = 0;
+    double sumxy = 0;
+    double sumx2y = 0;
+    double temp;
+    for (point p : inputSet){
+        temp = pow(p.x, 2.0);
+        sumx += p.x;
+        sumx2 += temp;
+        sumx3 += (p.x * temp);
+        sumx4 += pow(temp, 2.0);
+        sumy += p.y;
+        sumxy += (p.x * p.y);
+        sumx2y += (temp * p.y);
+    }
+    arma::mat X;
+    X.resize(3, 3);
+    X (0,0) = sumx4;
+    X (0,1) = sumx3;
+    X (0,2) = sumx2;
+    X (1,0) = sumx3;
+    X (1,1) = sumx2;
+    X (1,2) = sumx;
+    X (2,0) = sumx2;
+    X (2,1) = sumx;
+    X (2,2) = n;
+    arma::mat inverseX = arma::inv(X);
+    arma::vec Y;
+    Y.resize(3);
+    Y (0) = sumx2y;
+    Y (1) = sumxy;
+    Y (2) = sumy;
+    arma::vec A = inverseX * Y;
+    a = A(0);
+    b = A(1);
+    c = A(2);
+
+    return make_tuple(A(0), A(1), A(2));
+}
