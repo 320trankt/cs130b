@@ -1,5 +1,49 @@
 #include "algorithms.h"
 
+double getDistanceBetweenPoints(point p1, point p2){
+    return sqrt(pow(p2.x - p1.x, 2.0) + pow(p2.y - p1.y,2.0));
+}
+
+double calcYFromModel(double x, tuple<double, double, double> model){
+    double a = get<0>(model);
+    double b = get<1>(model);
+    double c = get<2>(model);
+    return ((a * pow(x, 2.0)) + (b * x) + c);
+}
+
+double getDistanceToModel(point p, tuple<double,double,double> model){
+    double a = get<0>(model);
+    double b = get<1>(model);
+    double c = get<2>(model);
+    double x = p.x;
+    double y = p.y;
+    double coefficientx3 = 2.0 * pow(a,2.0);
+    double coefficientx2 = 4.0 * a * b;
+    double coefficientx = 2.0 + (4*a*c) - (4*a*y) + (2 * pow(b, 2.0));
+    double coefficientconst = (2*b*c) - (2*x) - (2*b*y);
+    arma::vec P;
+    P.resize(4);
+    P (0) = coefficientx3;
+    P (1) = coefficientx2;
+    P (2) = coefficientx;
+    P (3) = coefficientconst;
+    arma::cx_vec R = roots(P);
+    double minDistance = INFINITY;
+    double currentDistance;
+    double currentX;
+    point p2;
+    for (int i = 0; i < R.n_elem; i++){
+        currentX = std::arg(R(i));
+        p2.x = currentX;
+        p2.y = calcYFromModel(p2.x, model);
+        currentDistance = getDistanceBetweenPoints(p, p2);
+        if (currentDistance < minDistance){
+            minDistance = currentDistance;
+        }
+    }
+    return minDistance;
+}
+
 bool comparePointsDistance(point p1, point p2){//comparator for 2 points
     return (p1.distanceToLine < p2.distanceToLine);
 }
@@ -68,9 +112,43 @@ tuple<double, double, double> getModel(vector<point> inputSet){
     Y (1) = sumxy;
     Y (2) = sumy;
     arma::vec A = inverseX * Y;
-    a = A(0);
-    b = A(1);
-    c = A(2);
 
     return make_tuple(A(0), A(1), A(2));
+}
+
+tuple<double, double, double> ransac(vector<point> inputSet, int numTrials){
+    vector<point> lastInputSet = inputSet;
+    vector<point> potentialInputSet;
+    double minMedianError = INFINITY;
+    double currentMedianError;
+    vector<point> trialPoints;
+    int randNum;
+    tuple<double, double, double> currentModel;
+    tuple<double, double, double> finalModel;
+    for (int i = 0; i < numTrials; i++){
+        lastInputSet = potentialInputSet;
+        for (int j = 0; j < 3; j++){
+            randNum = rand()%(potentialInputSet.size());
+            trialPoints.push_back(potentialInputSet[randNum]);
+            potentialInputSet.erase(potentialInputSet.begin() + randNum);
+        }
+        currentModel = getModel(trialPoints);
+        for (point p : potentialInputSet){
+            p.distanceToLine = getDistanceToModel(p, currentModel);
+        }
+        currentMedianError = getMedianError(potentialInputSet);
+        if (currentMedianError < minMedianError){
+            minMedianError = currentMedianError;
+            finalModel = currentModel;
+        }else{
+            potentialInputSet = lastInputSet;
+        }
+        trialPoints.clear();
+    }
+    for (point p : inputSet){
+        p.distanceToLine = getDistanceToModel(p, finalModel);
+    }
+    sort(inputSet.begin(), inputSet.end());
+    inputSet.erase(inputSet.begin() + inputSet.size()/2, inputSet.end());
+    return getModel(inputSet);
 }

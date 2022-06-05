@@ -5,13 +5,14 @@
 #include <tuple>
 #include <algorithm>
 #include <armadillo>
-#include "utilityFuncs.h"
-#include "matrix.c"
+#include "point.h"
 
 using namespace std;
+
+double getDistanceToModel(point p, tuple<double,double,double> model);
 
 double getMedianError(vector<point> inputSet);
 
 tuple<double, double, double> getModel(vector<point> inputSet);
 
-tuple<double, double, double> ransac(vector<point> inputSet, double tolerance)
+tuple<double, double, double> ransac(vector<point> inputSet, int numTrials);
