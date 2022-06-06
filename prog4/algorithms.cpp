@@ -17,7 +17,8 @@ tuple<double, double, double> getModel(vector<point> inputThree){
     double denominator = (x1-x2) * (x1-x3) * (x2-x3);
     double a = (x3 * (y2-y1) + x2 * (y1-y3) + x1 * (y3-y2)) / denominator;
     double b = (x3*x3 * (y1-y2) + x2*x2 * (y3-y1) + x1*x1 * (y2-y3)) / denominator;
-    double c = (x2 * x3 * (x2-x3) * y1+x3 * x1 * (x3-x1) * y2+x1 * x2 * (x1-x2) * y3) / denominator;
+    //double c = (x2 * x3 * (x2-x3) * y1+x3 * x1 * (x3-x1) * y2+x1 * x2 * (x1-x2) * y3) / denominator;
+    double c = (x2 * x2 * (x3 * y1 - x1 * y3) + x2 * (x1 * x1 * y3 - x3 * x3 * y1) + x1 * x3 * (x3 - x1) * y2)/denominator;
     return make_tuple(a, b, c);
 }
 
@@ -34,6 +35,8 @@ double getDistanceToModel(point p, tuple<double,double,double> model){
     double c = get<2>(model);
     double x = p.x;
     double y = p.y;
+    //approach utilizes the distance formula between a parabola with equation y = ax^2 + bc + c, and point (x,y)
+    //the distance between point (x,y) and y = ax^2+bc+c is d^2 = 
     double coefficientx3 = 2.0 * pow(a,2.0);
     double coefficientx2 = 4.0 * a * b;
     double coefficientx = 2.0 + (4.0*a*c) - (4.0*a*y) + (2.0 * pow(b, 2.0));
@@ -71,16 +74,16 @@ double getMedianError(vector<point> &inputSet){
     std::sort(inputSet.begin(), inputSet.end(), comparePointsDistance);///sort by distance from best fit line
     size_t setSize = inputSet.size();
     if (setSize%2 == 0){//if set has even number of elements
-        medianValue = (inputSet[setSize/2 - 1].distanceToLine + inputSet[setSize/2].distanceToLine)/2.0;//median distance
+        medianValue = (inputSet[inputSet.size()/2 - 1].distanceToLine + inputSet[inputSet.size()/2].distanceToLine)/2.0;//median distance
         isEven = true;
     }else{
-        medianValue = inputSet[setSize/2].distanceToLine;//median distance
+        medianValue = inputSet[inputSet.size()/2].distanceToLine;//median distance
         isEven = false;
     }
     vector<double> medianErrorVector;//create vector of distance to line values - median distance
     for (point &p : inputSet){
         //cout<<p.distanceToLine-medianValue<<endl;
-        medianErrorVector.push_back(p.distanceToLine - medianValue);
+        medianErrorVector.push_back(abs(p.distanceToLine - medianValue));
     }
     std::sort(medianErrorVector.begin(), medianErrorVector.end());//sort median deviation values
     if (isEven){
@@ -102,7 +105,7 @@ tuple<double, double, double> leastSquares(vector<point> &inputSet){
     double sumxy = 0;
     double sumx2y = 0;
     double temp;
-    for (point p : inputSet){
+    for (point &p : inputSet){
         temp = pow(p.x, 2.0);
         sumx += p.x;
         sumx2 += temp;
@@ -135,8 +138,7 @@ tuple<double, double, double> leastSquares(vector<point> &inputSet){
 }
 
 tuple<double, double, double> ransac(vector<point> &inputSet, int numTrials){
-    vector<point> lastInputSet = inputSet;
-    vector<point> potentialInputSet = inputSet;
+    vector<point> trialInputSet = inputSet;
     double minMedianError = INFINITY;
     double currentMedianError;
     vector<point> trialPoints;
@@ -144,31 +146,29 @@ tuple<double, double, double> ransac(vector<point> &inputSet, int numTrials){
     tuple<double, double, double> currentModel;
     tuple<double, double, double> finalModel;
     for (int i = 0; i < numTrials; i++){
-        lastInputSet = potentialInputSet;
+        trialInputSet = inputSet;
         for (int j = 0; j < 3; j++){
-            randNum = rand()%(potentialInputSet.size());
-            trialPoints.push_back(potentialInputSet[randNum]);
-            potentialInputSet.erase(potentialInputSet.begin() + randNum);
+            randNum = rand()%(trialInputSet.size());
+            trialPoints.push_back(trialInputSet[randNum]);
+            trialInputSet.erase(trialInputSet.begin() + randNum);
         }
         //currentModel = leastSquares(trialPoints);
         currentModel = getModel(trialPoints);
-        for (point &p : potentialInputSet){
+        for (point &p : trialInputSet){
             p.distanceToLine = getDistanceToModel(p, currentModel);
         }
-        currentMedianError = getMedianError(potentialInputSet);
+        currentMedianError = getMedianError(trialInputSet);
         //cout<<"trial "<<i<<", currentMedianError: "<<currentMedianError<<", minMedianError: "<<minMedianError<<endl;
         if (currentMedianError < minMedianError){
             minMedianError = currentMedianError;
             finalModel = currentModel;
-        }else{
-            potentialInputSet = lastInputSet;
         }
         trialPoints.clear();
     }
     for (point &p : inputSet){
         p.distanceToLine = getDistanceToModel(p, finalModel);
     }
-    sort(inputSet.begin(), inputSet.end());
-    inputSet.erase(inputSet.begin() + inputSet.size()/2, inputSet.end());
+    sort(inputSet.begin(), inputSet.end(), comparePointsDistance);
+    inputSet.erase(inputSet.begin() + inputSet.size()/2 - 1, inputSet.end());
     return leastSquares(inputSet);
 }

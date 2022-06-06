@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
             p.y = stod(value);
             sample.push_back(p);
         }
-        tuple<double, double, double> model = ransac(sample, 100);
+        tuple<double, double, double> model = ransac(sample, 60);
         cout<<get<0>(model)<<" "<<get<1>(model)<<" "<<get<2>(model)<<endl;
     }
     /////////////////////////////////////////
