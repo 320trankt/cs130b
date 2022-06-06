@@ -11,8 +11,8 @@ using namespace std;
 
 double getDistanceToModel(point p, tuple<double,double,double> model);
 
-double getMedianError(vector<point> inputSet);
+double getMedianError(vector<point> &inputSet);
 
-tuple<double, double, double> getModel(vector<point> inputSet);
+tuple<double, double, double> leastSquares(vector<point> &inputSet);
 
-tuple<double, double, double> ransac(vector<point> inputSet, int numTrials);
+tuple<double, double, double> ransac(vector<point> &inputSet, int numTrials);
