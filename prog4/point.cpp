@@ -10,11 +10,6 @@ point::point(double p_x, double p_y){
     y = p_y;
 }
 
-void point::setEqual(point p){
-    x = p.x;
-    y = p.y;
-}
-
 void point::operator= (const point &other){
     x = other.x;
     y = other.y;

@@ -7,7 +7,6 @@ class point{
         double x;
         double y;
         double distanceToLine;
-        void setEqual(point p);
         void operator= (const point &other);
         bool operator< (const point &other) const;
 };
